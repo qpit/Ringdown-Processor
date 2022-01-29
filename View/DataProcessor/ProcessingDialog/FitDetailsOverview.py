@@ -1,6 +1,7 @@
 from PyQt5.QtWidgets import QWidget,QHBoxLayout,QVBoxLayout,QFormLayout,QLabel
 from PyQt5 import QtWidgets
 from Model import Measurement
+from math import isnan
 
 class FitDetailsOverview(QWidget):
     """
@@ -55,14 +56,32 @@ class FitDetailsOverview(QWidget):
         Updates ui elements
         :return:
         """
+
         self.clear()
-        self.lbl_N.setText(str(self.measurement.n))
-        self.lbl_Nsel.setText(str(self.measurement.nsel))
-        self.lbl_f.setText('{:.5g} Hz'.format(self.measurement.frequency))
-        self.lbl_Q.setText('{:.5g}'.format(self.measurement.quality_factor))
-        self.lbl_Q_SE.setText('{:.5g}'.format(self.measurement.quality_factor_SE))
-        self.lbl_R2.setText('{:.5g}'.format(self.measurement.quality_factor_R2))
-        self.lbl_Qf.setText('{:.5g} Hz'.format(self.measurement.Qf))
+
+        # List of Qlabel, value, format
+        l = [(self.lbl_N,self.measurement.n),
+             (self.lbl_Nsel,self.measurement.nsel),
+             (self.lbl_f,self.measurement.frequency,'{:.5g} Hz'),
+             (self.lbl_Q,self.measurement.quality_factor,'{:.5g}'),
+             (self.lbl_Q_SE,self.measurement.quality_factor_SE,'{:.5g}'),
+             (self.lbl_R2,self.measurement.quality_factor_SE,'{:.5g}'),
+             (self.lbl_Qf,self.measurement.Qf,'{:.5g} Hz')]
+
+        def settext(qlabel,value,format='{:}'):
+            if (value is not None) and (not isnan(value)):
+                qlabel.setText(format.format(value))
+
+        for args in l:
+            settext(*args)
+
+        # self.lbl_N.setText(str(self.measurement.n))
+        # self.lbl_Nsel.setText(str(self.measurement.nsel))
+        # self.lbl_f.setText('{:.5g} Hz'.format(self.measurement.frequency))
+        # self.lbl_Q.setText('{:.5g}'.format(self.measurement.quality_factor))
+        # self.lbl_Q_SE.setText('{:.5g}'.format(self.measurement.quality_factor_SE))
+        # self.lbl_R2.setText('{:.5g}'.format(self.measurement.quality_factor_R2))
+        # self.lbl_Qf.setText('{:.5g} Hz'.format(self.measurement.Qf))
 
     def clear(self):
         """

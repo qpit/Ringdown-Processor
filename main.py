@@ -9,3 +9,4 @@ app = QApplication(sys.argv)
 mainwindow = MainWindow(model)
 mainwindow.show()
 app.exec()
+

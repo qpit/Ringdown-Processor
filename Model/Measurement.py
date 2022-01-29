@@ -307,6 +307,8 @@ class Measurement():
 
             if self.x[i1] - self.x[i0] <= INI_MIN_T_OFFSET:
                 i1 = int(round(INI_MIN_T_OFFSET / dt)) + i0
+                if i1 >= self.n:
+                    i1 = self.n -1
 
             zero_crossings = np.where(np.diff(np.signbit(self.y[i1:] + DB_INTERVAL - self.y[i1])))[0]
 
@@ -366,7 +368,8 @@ class Measurement():
         :return:
         """
         self.autoselectpoints_ringdown()
-        self.estimate_ringdown()
+        if len(self.i_sel):
+            self.estimate_ringdown()
 
     def autoselectpoints_spectrum(self):
         """
@@ -436,11 +439,14 @@ class Measurement():
         var_f = cov[0, 0]
         var_df = cov[1, 1]
         var_Q = var_df / fc ** 2 + var_f * df ** 2 / fc ** 4
-        self.quality_factor_SE = math.sqrt(var_Q)
+        if var_f > 0 and var_df > 0 and var_Q > 0:
+            self.quality_factor_SE = math.sqrt(var_Q)
 
-        SSE = np.sum(np.power(res, 2))
-        SST = np.sum(np.power(y - np.mean(y), 2))
-        self.quality_factor_R2 = 1 - SSE / SST
+            SSE = np.sum(np.power(res, 2))
+            SST = np.sum(np.power(y - np.mean(y), 2))
+            self.quality_factor_R2 = 1 - SSE / SST
+        else:
+            self.quality_factor_SE = self.quality_factor_R2 = None
 
         # Fitted line
         self.xfit = self.x
