@@ -213,7 +213,7 @@ class Measurement():
             if p.name == name:
                 self._properties.remove(p)
                 return
-        raise ValueError("The property '{:s}' does not exist.".format(name))
+        raise ValueError("The property '{:s}' does not exist in sample '{:s}'.".format(name,self.sampleID))
 
     def clear_properties(self):
         """
