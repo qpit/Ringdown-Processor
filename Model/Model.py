@@ -6,6 +6,7 @@ import math
 from . import serializer
 from .constants import NMAX
 from . import legacy_loader
+from .Model_ExportFunctions import Model_ExportFunctions
 
 class DuplicateMeasurementError(Exception):
     pass
@@ -15,10 +16,14 @@ class MeasurementMissingInfoError(Exception):
         self.index = index
         super().__init__(*args,**kwargs)
 
-class Model():
+class Model(Model_ExportFunctions):
     """
     Main class for handling all processing of data in app.
     """
+
+    @property
+    def saved_measurements(self):
+        return self._saved_measurements.copy()
 
     @property
     def num_of_measurements_to_be_processed(self) -> int:
@@ -30,7 +35,9 @@ class Model():
 
     @property
     def sampleIDs(self) -> list:
-        return list(self.sorted_to_sampleIDs.keys())
+        l = list(self.sorted_to_sampleIDs.keys())
+        l.sort()
+        return l
 
     @property
     def modes(self) -> list:
@@ -38,11 +45,15 @@ class Model():
 
     @property
     def design_types(self) -> list:
-        return list(self.sorted_to_design_types.keys())
+        l = list(self.sorted_to_design_types.keys())
+        l.sort()
+        return l
 
     @property
     def prefixes(self) -> list:
-        return list(self.sorted_to_prefixes.keys())
+        l = list(self.sorted_to_prefixes.keys())
+        l.sort()
+        return l
 
     @property
     def properties(self) -> list:
@@ -170,7 +181,6 @@ class Model():
         ''' Unique lists of already defined sampleIDs, modes, design types 
         and parameters used to aid during dataprocessing. '''
         # From list of saved measurements.
-
         self._modes = []
         self._properties = []
 

@@ -49,5 +49,6 @@ def _save_file(d:dict):
     path = pathlib.Path(CONFIG_FILE_NAME)
     with open(path, 'w') as f:
         for key,value in d.items():
-            f.write(key + DELIMITER + str(value) + "\n")
+            value = str(value).strip().replace('\n','')
+            f.write(key + DELIMITER + value + '\n')
 

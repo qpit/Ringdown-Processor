@@ -1,1 +1,2 @@
-open_measurement_directory = O:\LIST-QPIT\Villum2016\Micro Mechanical Resonators\Ringdown measurements\220126 - TOT115
+open_measurement_directory = Q:\Villum2016\Micro Mechanical Resonators\Ringdown measurements\180516
+open_export_directory = C:\Users\denno\Desktop
