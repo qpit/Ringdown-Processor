@@ -3,6 +3,7 @@ An addin class for the Model class focused on export functionality
 """
 from openpyxl import Workbook
 from .Measurement import ATTRIBUTES_BASIC_INFORMATION
+from .measurement_filters import filt_design_type,filt_sampleID,filt_property
 
 class Model_ExportFunctions():
 
@@ -25,24 +26,15 @@ class Model_ExportFunctions():
         filters = []
 
         ''' Filter data '''
-        # Design type filter
+        # Setup filters
         if design_type:
-            design_type = design_type.strip()
-            design_type_cmp = design_type.lower()
-            filters.append(lambda m: m.design_type.lower() == design_type_cmp)
-
-        # Substring filter
+            filters.append(filt_design_type(design_type))
         if sampleID_substring:
-            sampleID_substring = sampleID_substring.strip()
-            sampleID_substring_cmp = sampleID_substring.lower()
-            filters.append(lambda m: sampleID_substring_cmp in m.sampleID.lower())
-
-        # Boolean filters
+            filters.append(filt_sampleID(sampleID_substring))
         if not include_bad:
-            filters.append(lambda m: not m.is_bad)
-
+            filters.append(filt_property('is_bad',False,'=='))
         if not include_gas_limited:
-            filters.append(lambda m: not m.is_gas_limited)
+            filters.append(filt_property('is_gas_limited', False, '=='))
 
         # Perform filtering
         measurements = [m for m in self.saved_measurements if all(f(m) for f in filters)]

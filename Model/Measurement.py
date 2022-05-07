@@ -32,7 +32,9 @@ ATTRIBUTES_BASIC_INFORMATION = [('measurement_ID','Measurement ID'),
                                 ('quality_factor','Quality factor'),
                                 ('temperature','Temperature [K]'),
                                 ('pressure','Pressure [mBar]'),
-                                ('notes','Notes')]
+                                ('notes','Notes'),
+                                ('is_bad','Bad'),
+                                ('is_gas_limited','Gas limited')]
 
 class Measurement():
     @property

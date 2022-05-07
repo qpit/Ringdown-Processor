@@ -42,9 +42,9 @@ class MainWindow(WindowTemplate):
         layout.addWidget(b)
         b.clicked.connect(self._load_legacy)
 
-        b = QPushButton('Export TOT115')
-        layout.addWidget(b)
-        b.clicked.connect(self._export_TOT115)
+        # b = QPushButton('Export TOT115')
+        # layout.addWidget(b)
+        # b.clicked.connect(self._export_TOT115)
 
 
 
@@ -64,21 +64,21 @@ class MainWindow(WindowTemplate):
         self.show()
 
 
-    def _export_TOT115(self):
-        measurements = self.model.saved_measurements
-        l = [m for m in measurements if "TOT115" in m.sampleID]
-        workbook = xlsxwriter.Workbook('TOT115.xlsx')
-        worksheet = workbook.add_worksheet()
-        row = 0
-        worksheet.write(row, 0, "Sample ID")
-        worksheet.write(row, 1, "Frequency [Hz]")
-        worksheet.write(row, 2, "Quality factor")
-        worksheet.write(row, 3, "Q*f [Hz]")
-        for m in l:
-            row += 1
-            worksheet.write(row, 0, m.sampleID)
-            worksheet.write(row, 1, m.frequency)
-            worksheet.write(row, 2, m.quality_factor)
-            worksheet.write(row, 3, m.Qf)
-
-        workbook.close()
+    # def _export_TOT115(self):
+    #     measurements = self.model.saved_measurements
+    #     l = [m for m in measurements if "TOT115" in m.sampleID]
+    #     workbook = xlsxwriter.Workbook('TOT115.xlsx')
+    #     worksheet = workbook.add_worksheet()
+    #     row = 0
+    #     worksheet.write(row, 0, "Sample ID")
+    #     worksheet.write(row, 1, "Frequency [Hz]")
+    #     worksheet.write(row, 2, "Quality factor")
+    #     worksheet.write(row, 3, "Q*f [Hz]")
+    #     for m in l:
+    #         row += 1
+    #         worksheet.write(row, 0, m.sampleID)
+    #         worksheet.write(row, 1, m.frequency)
+    #         worksheet.write(row, 2, m.quality_factor)
+    #         worksheet.write(row, 3, m.Qf)
+    #
+    #     workbook.close()
