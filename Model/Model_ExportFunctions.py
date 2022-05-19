@@ -12,7 +12,8 @@ class Model_ExportFunctions():
                design_type = None,
                sampleID_substring = None,
                include_bad = False,
-               include_gas_limited = False
+               include_gas_limited = False,
+               sort_designs_into_sheets = True,
                ):
         """
         Exports data to csv file.
@@ -21,11 +22,13 @@ class Model_ExportFunctions():
         :param include_bad: If True, includes bad data.
         :param include_gas_limited: If True, includes gas-limited data.
         :param export_path: If none, saves as 'export.xlsx' at current folder.
+        :param sort_designs_into_sheets: If true, defines a sheet for each selected design type.
         :return:
         """
-        filters = []
 
         ''' Filter data '''
+        filters = []
+
         # Setup filters
         if design_type:
             filters.append(filt_design_type(design_type))
@@ -39,54 +42,68 @@ class Model_ExportFunctions():
         # Perform filtering
         measurements = [m for m in self.saved_measurements if all(f(m) for f in filters)]
 
-        ''' Export filtered data '''
+        ''' Create workbook and its sheets '''
         wb = Workbook()  # Create workbook
         ws = wb.active  # Grab the active worksheet
 
-        # Obtain unique list of parameters from filtered list
-        property_names = []
-        for m in measurements:
-            for p in m.properties:
-                t = (p.name,p.unit)
-                if not t in property_names:
-                    property_names.append(t)
-        property_names.sort()
+        def print_sheet(measurements,ws):
+            # Obtain unique list of parameters from filtered list
+            property_names = []
+            for m in measurements:
+                for p in m.properties:
+                    t = (p.name, p.unit)
+                    if not t in property_names:
+                        property_names.append(t)
+            property_names.sort()
 
-        # Write columns
-        column = 1
-        row = 1
-        basic_info = [t for t in ATTRIBUTES_BASIC_INFORMATION if not t[1] in ['notes']]
-
-        for attr, label in basic_info:
-            ws.cell(row=row, column=column, value=label)
-            column += 1
-
-        column_properties = column
-        for name,unit in property_names:
-            value = name
-            if unit:
-                value += ' [' + unit + ']'
-            ws.cell(row=row, column=column, value=value)
-            column += 1
-
-        # Write data
-        for m in measurements:
-            row += 1
+            # Write columns
             column = 1
+            row = 1
+            basic_info = [t for t in ATTRIBUTES_BASIC_INFORMATION if not t[1] in ['notes']]
 
-            # Basic info
-            for attr,label in basic_info:
-                ws.cell(row=row, column=column, value=getattr(m,attr))
+            for attr, label in basic_info:
+                ws.cell(row=row, column=column, value=label)
                 column += 1
 
-            # Properties
-            for p in m.properties:
-                t = (p.name,p.unit)
-                i = property_names.index(t)
-                ws.cell(row=row, column=column_properties + i, value=m[p.name])
+            column_properties = column
+            for name, unit in property_names:
+                value = name
+                if unit:
+                    value += ' [' + unit + ']'
+                ws.cell(row=row, column=column, value=value)
+                column += 1
 
+            # Write data
+            for m in measurements:
+                row += 1
+                column = 1
 
-        # Save to file
+                # Basic info
+                for attr, label in basic_info:
+                    ws.cell(row=row, column=column, value=getattr(m, attr))
+                    column += 1
+
+                # Properties
+                for p in m.properties:
+                    t = (p.name, p.unit)
+                    i = property_names.index(t)
+                    ws.cell(row=row, column=column_properties + i, value=m[p.name])
+
+        if sort_designs_into_sheets:
+            design_types = [m.design_type for m in measurements]
+            design_types = list(set(design_types))
+            for i_design,design_type in enumerate(design_types):
+                if i_design == 0:
+                    ws.title = design_type
+                else:
+                    wb.create_sheet(design_type)
+                ws = wb[design_type]
+                print_sheet([m for m in measurements if m.design_type == design_type],
+                            ws)
+        else:
+            print_sheet(measurements,ws)
+
+        ''' Save to file '''
         if export_path is None:
             export_path = 'export.xlsx'
         wb.save(export_path)
