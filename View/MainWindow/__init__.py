@@ -36,11 +36,11 @@ class MainWindow(WindowTemplate):
         layout.addWidget(b)
         b.clicked.connect(lambda: self._dialog_opener(DlgExporter, self.model))
 
-        layout.addSpacing(10)
+        # layout.addSpacing(10)
 
-        b = QPushButton('Load legacy data')
-        layout.addWidget(b)
-        b.clicked.connect(self._load_legacy)
+        # b = QPushButton('Load legacy data')
+        # layout.addWidget(b)
+        # b.clicked.connect(self._load_legacy)
 
         # b = QPushButton('Export TOT115')
         # layout.addWidget(b)
@@ -48,20 +48,20 @@ class MainWindow(WindowTemplate):
 
 
 
-    def _load_legacy(self):
-        """
-        Loads legacy data from older version.
-        :return:
-        """
-        self.hide()
-        self.dlg = dialog = QFileDialog()
-        dialog.setFileMode(QFileDialog.ExistingFile)
-        if dialog.exec():
-            path = dialog.selectedFiles()[0]
-            self.model.load_legacy_data(path)
-            self.model._changed()
-            self.model.save()
-        self.show()
+    # def _load_legacy(self):
+    #     """
+    #     Loads legacy data from older version.
+    #     :return:
+    #     """
+    #     self.hide()
+    #     self.dlg = dialog = QFileDialog()
+    #     dialog.setFileMode(QFileDialog.ExistingFile)
+    #     if dialog.exec():
+    #         path = dialog.selectedFiles()[0]
+    #         self.model.load_legacy_data(path)
+    #         self.model._changed()
+    #         self.model.save()
+    #     self.show()
 
 
     # def _export_TOT115(self):
