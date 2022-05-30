@@ -633,3 +633,14 @@ class Model(Model_ExportFunctions):
         :return:
         """
         legacy_loader.load(self,path)
+
+    def get_list_of_property_values(self,name:str):
+        """
+        Returns unique list of already defined values of a property
+        :param name:
+        :return:
+        """
+        values = (m[name] for m in self.saved_measurements if m.has_property(name))
+        values = list(set(values))
+        values.sort()
+        return values

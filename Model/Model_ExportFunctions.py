@@ -59,7 +59,14 @@ class Model_ExportFunctions():
             # Write columns
             column = 1
             row = 1
-            basic_info = [t for t in ATTRIBUTES_BASIC_INFORMATION if not t[1] in ['notes']]
+
+            basic_info = []
+            for attr,label in ATTRIBUTES_BASIC_INFORMATION:
+                # if label in ['notes']:
+                #     continue
+                basic_info.append((attr,label))
+                if attr == 'quality_factor':
+                    basic_info.append(('qf', 'Qf [Hz]'))
 
             for attr, label in basic_info:
                 ws.cell(row=row, column=column, value=label)
@@ -80,7 +87,11 @@ class Model_ExportFunctions():
 
                 # Basic info
                 for attr, label in basic_info:
-                    ws.cell(row=row, column=column, value=getattr(m, attr))
+                    if attr == 'qf':
+                        value = m.quality_factor * m.frequency
+                    else:
+                        value = getattr(m, attr)
+                    ws.cell(row=row, column=column, value=value)
                     column += 1
 
                 # Properties

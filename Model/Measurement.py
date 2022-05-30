@@ -603,3 +603,11 @@ class Measurement():
                     f.write("{:}\n".format(self._i_sel[i]))
 
         self._changed = False
+
+    def has_property(self,name:str):
+        """
+        Returns True if properpy exists
+        :param name:
+        :return:
+        """
+        return name in [p.name for p in self._properties]

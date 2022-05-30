@@ -276,6 +276,7 @@ class MeasurementRow(QWidget):
         elif property.dtype is float:
             cell = Cell.FloatCell(unit=property.unit,**kwargs)
         elif property.dtype is str:
+            kwargs['get_items_fcn'] = lambda p=property: self.model.get_list_of_property_values(p.name)
             cell = Cell.ListCell(**kwargs)
             cell.signal_newentry.connect(self._list_cell_new_entry)
         elif property.dtype is bool:
