@@ -5,7 +5,7 @@ from Model import Model
 from ..windowtemplate import WindowTemplate
 from ..Exporter import DlgExporter
 
-import xlsxwriter
+
 
 # Wra
 
@@ -63,7 +63,7 @@ class MainWindow(WindowTemplate):
     #         self.model.save()
     #     self.show()
 
-
+    # import xlsxwriter
     # def _export_TOT115(self):
     #     measurements = self.model.saved_measurements
     #     l = [m for m in measurements if "TOT115" in m.sampleID]

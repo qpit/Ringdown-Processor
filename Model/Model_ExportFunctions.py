@@ -104,6 +104,8 @@ class Model_ExportFunctions():
             design_types = [m.design_type for m in measurements]
             design_types = list(set(design_types))
             for i_design,design_type in enumerate(design_types):
+                if design_type == '':
+                    design_type = 'noname'
                 if i_design == 0:
                     ws.title = design_type
                 else:

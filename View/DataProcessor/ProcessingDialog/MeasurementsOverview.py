@@ -126,5 +126,5 @@ class MeasurementsOverview(QWidget):
         :return:
         """
         for row in self.rows:
-            row.add_property(p,add2measurement=True)
+            row.add_property(p.copy(),add2measurement=True)
 
