@@ -124,9 +124,13 @@ class Model(Model_ExportFunctions):
                 d[p.name].append(p)
 
         # Keep parameters in use in the majority of measurements
+        list_todelete = []
         for name,l in d.items():
             if len(l) < len(measurements):
-                del d[name]
+                list_todelete.append(name)
+
+        for name in list_todelete:
+            del d[name]
 
         # For remaining parameters obtain the most common value
         common_properties = []

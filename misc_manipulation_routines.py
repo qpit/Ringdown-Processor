@@ -127,5 +127,19 @@ def update_TOT_data():
     # Save
     model.save()
 
-update_TOT_data()
+#update_TOT_data()
 #Toplogy Optimized Trampoline
+
+def add_property_to_design(design:str,pname:str,pvalue,punit:str):
+    model = Model()
+    model.load()
+
+    filt = filt_design_type(design)
+    measurements = [m for m in model.saved_measurements if filt(m)]
+
+    for m in measurements:
+        m.add_property(pname,pvalue,punit)
+
+    model.save()
+
+add_property_to_design('Square Membrane Pad','S',1480,'µm')
