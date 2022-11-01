@@ -303,13 +303,16 @@ class Model(Model_ExportFunctions):
             # Possibly a ringdown file.
             self._loaded_ringdown_files.append(path)
 
-    def process_loaded_files(self):
+    def process_loaded_files(self, msg_method=None):
         """
         Processes all loaded files and clears the loaded files lists. Adds to list of processing measurements
+        :param msg_method: Supply a method for recieving messages. Optional.
         :return:
         """
+        msg_method = msg_method or (lambda s: None)
 
         ''' Process all legend files '''
+        msg_method("Processing legend files")
         legend_entries = []
         for path in self._loaded_legend_files:
             legend_entries.extend(self._process_legend_file(path))
@@ -334,6 +337,7 @@ class Model(Model_ExportFunctions):
 
             # Process file
             is_ok = False
+            msg_method("Loading file {:s}...".format(filename))
             try:
                 measurement.loadfile(path)
 
@@ -347,6 +351,7 @@ class Model(Model_ExportFunctions):
                 errors.append(e)
 
             if is_ok:
+                msg_method("Autofitting file {:s}...".format(filename))
                 try:
                     measurement.autofit()
                 except AutoFitError as e:
@@ -357,6 +362,7 @@ class Model(Model_ExportFunctions):
         self._loaded_ringdown_files.clear()
 
         # Infer missing info where possible
+        msg_method("Inferring missing infomation...")
         for m in self._measurements_to_be_processed:
             self.fillout_measurement(m)
 

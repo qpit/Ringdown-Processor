@@ -4,6 +4,7 @@ from Model import Model
 from .ProcessingDialog import ProcessingDialog
 import config
 import pathlib
+from .ProcessingDialog.NoButtonDialog import NoButtonDialog
 
 class processor(QObject):
     """
@@ -38,9 +39,14 @@ class processor(QObject):
         config.save_parameter("open_measurement_directory",directory)
 
         # Load and preprocess files.
+        infowindow = NoButtonDialog("Processing files...")
+        infowindow.show()
+
         for file in filenames:
             model.load_measurement_file(file)
-        errors = model.process_loaded_files()
+        errors = model.process_loaded_files(msg_method=lambda s: infowindow.settext(s))
+
+        infowindow.destroy()
 
         # Display errors if any
         if errors:

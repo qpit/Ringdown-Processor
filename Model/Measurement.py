@@ -10,6 +10,7 @@ import numpy as np
 from scipy.optimize import least_squares
 from .Property import Property
 from . import constants
+from .ringdown_autoselect import autoselect
 import pathlib
 
 class AutoFitError(Exception):
@@ -298,32 +299,7 @@ class Measurement():
         Routine for automatically selecting points for fit for ringdown type of measurement.
         :return:
         """
-        dt = self.x[2] - self.x[1]
-
-        i0 = np.argmax(self.y)
-
-        # Pick first point of ringdown estimation offset by a fixed number of dB
-        zero_crossings = np.where(np.diff(np.signbit(self.y[i0:] - self.y[i0] + INI_DB_DROP)))[0]
-        if len(zero_crossings):
-            i1 = zero_crossings[0] + i0
-
-            if self.x[i1] - self.x[i0] <= INI_MIN_T_OFFSET:
-                i1 = int(round(INI_MIN_T_OFFSET / dt)) + i0
-                if i1 >= self.n:
-                    i1 = self.n -1
-
-            zero_crossings = np.where(np.diff(np.signbit(self.y[i1:] + DB_INTERVAL - self.y[i1])))[0]
-
-            if len(zero_crossings):
-                i2 = zero_crossings[0] + i1
-                if i2 >= len(self.x):
-                    i2 = len(self.x)
-            else:
-                i2 = len(self.x)
-
-            self.i_sel = list(range(i1,i2))
-        else:
-            raise AutoFitError(self.path)
+        self.i_sel = autoselect(self.x,self.y)
 
     def estimate_ringdown(self):
         """
